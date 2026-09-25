@@ -213,3 +213,12 @@ commit the implementation and progress documentation on the active competition
 branch, push it to `origin`, and verify the remote branch SHA. Do not commit the
 original supplied challenge documents or prompt/conversation inputs unless the
 user explicitly asks for that publication.
+
+## User follow-up — 2026-09-25
+
+Continue the plan and progress.
+
+Assistant execution plan: diagnose missed links, compare wider lexical retrieval
+against the same complete target population, retrain with unchanged query-group
+splits, record runtime/parameters and limitations, run tests, update project
+records, then commit and push verified work under the user's existing instruction.

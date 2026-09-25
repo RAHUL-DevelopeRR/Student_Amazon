@@ -117,6 +117,20 @@ class CoreTests(unittest.TestCase):
             tokens=json.loads((root/'token/metrics.json').read_text())
             self.assertEqual(tokens['candidate_recall'],1)
             self.assertEqual(tokens['target_corpus_size'],4)
+            self.assertEqual(tokens['by_country']['France']['candidate_recall'],1)
+            self.assertEqual(tokens['by_country']['US']['average_candidates'],0)
+            self.assertEqual((root/'token/missed_links.tsv').read_text().splitlines(),
+                             ['source1_entity_id\ttarget_entity_id\tcountry'])
+            # Exercise the unchanged official CLI, including target ID checks.
+            import subprocess,sys
+            from config import ROOT
+            checked=subprocess.run([sys.executable,'-X','utf8',
+                str(ROOT/'utils/validate_submission.py'),'--matching',
+                str(root/'train/train_ground_truth.tsv'),'--candidate',
+                str(root/'token/candidate_pairs.tsv'),'--test-dir',str(root/'test'),
+                '--check-ids'],capture_output=True,text=True,encoding='utf-8')
+            self.assertEqual(checked.returncode,0,checked.stdout+checked.stderr)
+            self.assertNotIn('WARNING:',checked.stdout)
 
 
 if __name__ == "__main__":

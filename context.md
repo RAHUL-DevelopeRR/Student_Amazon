@@ -94,6 +94,34 @@ The matcher evaluated on those full-corpus token candidates reached macro-F0.5
 701 false negatives. Country macro-F0.5 was 0.760065 for India and 0.814487 for
 the US. These results are evaluation samples, not test predictions.
 
+## Latest retrieval checkpoint (2026-09-25)
+
+The same 3,000 development queries were searched against all 10,320,219 targets
+with `max_df=20000`, top 60 per source/field and seed 42. Candidate recall improved
+from 0.733365 to 0.905248, with 655,295 pairs (218.43/query), an all-query oracle
+macro-F0.5 ceiling of 0.957742 and runtime 363.750s. India recall is 0.864660;
+US recall is 0.933020. No France evaluation labels are available.
+
+The initial widened run failed at a 512MB DuckDB buffer. The successful retry used
+1GB and released each field's intermediate tables. Process RSS was sampled near
+1.28GB, not continuously measured. The blocker now exports country metrics and
+missed links. The feature extractor has a bounded preprocessing cache with
+unchanged feature values. Tests include the official validator's `--check-ids`
+CLI on a small fixture, not validation of production predictions.
+
+These development queries have now informed retrieval choices. A fresh untouched
+query sample is needed for a final generalization assessment. Changed rankings
+dropped 14 old true links while adding many more; a union of complementary
+candidate channels remains worth evaluating.
+
+The wide-candidate matcher completed in 750.422s. Calibration chose threshold
+0.48; the unchanged 587-query evaluation split reached macro-F0.5 0.867876
+(previously 0.791216), pair precision 0.939670 and recall 0.794132. Singleton
+accuracy regressed to 0.812500 from 0.906250. India macro-F0.5 was 0.814272 and
+US 0.907920. The evaluation-only retrieval ceiling is 0.960777; 189 true links
+were absent from retrieval. The saved-model reload check passed. Next matcher
+work should address singleton precision and India errors alongside retrieval.
+
 ## Remaining work
 
 1. Build cached compact-name, character, transliteration and multilingual retrieval

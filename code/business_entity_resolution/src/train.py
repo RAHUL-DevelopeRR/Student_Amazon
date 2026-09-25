@@ -38,12 +38,15 @@ def main():
     a=p.parse_args();start=time.monotonic()
     meta=json.loads((a.candidate_dir/'metrics.json').read_text())
     candidates={k:sorted(v) for k,v in read_mapping(a.candidate_dir/'candidate_pairs.tsv','candidate_entity_ids').items()}
+    print(f'Loading source records for {len(candidates):,} query IDs',flush=True)
     con=connect()
     con.execute('CREATE TEMP TABLE selected_ids AS SELECT unnest(?) entity_id',[list(candidates)])
     queries={r[0]:r for r in con.execute("SELECT s.entity_id,s.name_norm,s.address_norm,coalesce(s.country,'') FROM train_source1 s JOIN selected_ids q USING(entity_id)").fetchall()}
     target_ids=sorted({t for c in candidates.values() for t in c})
+    print(f'Loading {len(target_ids):,} distinct candidate target records',flush=True)
     con.execute('CREATE TEMP TABLE selected_targets AS SELECT unnest(?) entity_id',[target_ids])
     targets={r[0]:r for r in con.execute("SELECT t.entity_id,t.name_norm,t.address_norm,coalesce(t.country,'') FROM targets t JOIN selected_targets q USING(entity_id)").fetchall()}
+    print('Loading training labels for evaluation and fitting',flush=True)
     truth={i:set(v.split(',')) if v else set() for i,v in con.execute('SELECT source1_entity_id,matched_entity_ids FROM truth JOIN selected_ids ON source1_entity_id=entity_id').fetchall()}
     con.close()
     if len(queries)!=len(candidates) or len(truth)!=len(candidates) or len(targets)!=len(target_ids):

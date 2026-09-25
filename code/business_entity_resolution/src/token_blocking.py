@@ -10,11 +10,12 @@ def main():
     p.add_argument('--queries',type=int,default=3000)
     p.add_argument('--top-k',type=int,default=30)
     p.add_argument('--max-df',type=int,default=2000)
+    p.add_argument('--memory-limit',default='512MB',help='DuckDB buffer limit, not a total process RAM cap')
     p.add_argument('--output-dir',type=Path,default=ROOT/'artifacts/blocking_token_full')
     p.add_argument('--db',type=Path,default=ROOT/'artifacts/audit.duckdb')
     a=p.parse_args()
     if min(a.queries,a.top_k,a.max_df)<1:p.error('Counts must be positive')
-    start=time.monotonic();con=connect(a.db)
+    start=time.monotonic();con=connect(a.db,memory=a.memory_limit)
     con.execute(f"CREATE TEMP TABLE queries AS SELECT entity_id,name_norm,address_norm,coalesce(country,'') country FROM train_source1 ORDER BY md5(entity_id || '42') LIMIT {a.queries}")
     queries=con.execute('SELECT * FROM queries ORDER BY entity_id').fetchall()
     con.execute("CREATE TEMP VIEW corpus AS SELECT entity_id,name_norm,address_norm,coalesce(country,'') country FROM targets")
@@ -35,15 +36,29 @@ def main():
         channels[field+'_token']=channel
         for i,c in enumerate(channel):candidate[i].update(c)
         print(f'{field}: retained {len(results):,} candidate pairs',flush=True)
+        # Release the completed field before allocating the next field's postings.
+        for table in ['scored','token_df','postings','query_tokens']:
+            con.execute(f'DROP TABLE {table}')
     result=metrics(queries,truth,candidate,count)
+    result['by_country']={}
+    for country in sorted({q[3] for q in queries}):
+        indices=[i for i,q in enumerate(queries) if q[3]==country]
+        result['by_country'][country]=metrics([queries[i] for i in indices],truth,
+                                             [candidate[i] for i in indices],count)
     result.update(scope='sampled_queries_full_target_corpus_token_retrieval',seconds=time.monotonic()-start,
-                  parameters={'queries':a.queries,'top_k':a.top_k,'max_df':a.max_df,'seed':42},
+                  parameters={'queries':a.queries,'top_k':a.top_k,'max_df':a.max_df,'seed':42,'memory_limit':a.memory_limit},
                   channel_metrics={k:metrics(queries,truth,v,count) for k,v in channels.items()},caps=caps)
     a.output_dir.mkdir(parents=True,exist_ok=True)
     save_json(a.output_dir/'metrics.json',result)
     with (a.output_dir/'candidate_pairs.tsv').open('w',encoding='utf-8',newline='') as f:
         w=csv.writer(f,delimiter='\t',lineterminator='\n');w.writerow(['source1_entity_id','candidate_entity_ids'])
         w.writerows((q[0],','.join(sorted(c))) for q,c in zip(queries,candidate))
+    # Labels are used only after retrieval, to diagnose unrecovered true links.
+    with (a.output_dir/'missed_links.tsv').open('w',encoding='utf-8',newline='') as f:
+        w=csv.writer(f,delimiter='\t',lineterminator='\n')
+        w.writerow(['source1_entity_id','target_entity_id','country'])
+        w.writerows((q[0],t,q[3]) for q,c in zip(queries,candidate)
+                    for t in sorted(truth[q[0]]-c))
     log_experiment('token_blocking',{k:result[k] for k in ['scope','candidate_recall','average_candidates','seconds']},result['parameters'])
     print(json.dumps({k:v for k,v in result.items() if k!='channel_metrics'},indent=2),flush=True)
     con.close()

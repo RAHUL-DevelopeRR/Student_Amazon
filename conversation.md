@@ -1472,3 +1472,31 @@ additional cached compact-name, transliteration and multilingual retrieval work.
 
 Add the entire conversation to `conversation.md` and context to `context.md` and
 prompts to `prompt.md`.
+
+## User — next development request
+
+Continue the plan and progress.
+
+## Assistant — development summary (2026-09-25)
+
+Resumed the retrieval bottleneck using the existing full-target development sample.
+Of 2,769 missed links, 2,765 shared a name/address token of at least three
+characters. Increasing the token frequency cutoff to 20,000 and retaining top
+60 per field/source improved candidate recall from 73.34% to 90.52% on the same
+3,000 queries and all 10,320,219 targets. The completed run took 363.750s and
+produced 655,295 candidates. This paragraph is a progress summary, not a verbatim
+transcript of every intermediate tool call.
+
+A first attempt failed at DuckDB's 512MB buffer limit. The successful retry used
+1GB and code that releases completed field tables. Added per-country metrics,
+missed-link exports, a bounded feature preprocessing cache and an official
+validator CLI check with `--check-ids` on the small test fixture. The original
+competition data and validator remain unchanged. Full production inference,
+test-output validation and leaderboard submission remain outstanding.
+
+The subsequent wide-candidate matcher completed with macro-F0.5 0.867876 versus
+0.791216 on the same 587 evaluation entities. Pair precision was 0.939670, recall
+0.794132 and singleton accuracy 0.812500 (down from 0.906250). Calibration selected
+threshold 0.48; runtime was 750.422s. The saved model passed prediction reload
+verification. These are development comparisons; the singleton regression and
+remaining India errors are priorities for the next iteration.

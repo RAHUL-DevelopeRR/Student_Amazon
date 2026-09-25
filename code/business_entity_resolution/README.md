@@ -93,6 +93,21 @@ names can still prevent retrieval. Memory is bounded using DuckDB disk spill.
 Query count is sampled; the target population is complete. Do not call this
 full-production inference or a France evaluation.
 
+For a wider lexical retrieval experiment on the same fixed queries:
+
+```powershell
+.venv/Scripts/python.exe -u code/business_entity_resolution/src/token_blocking.py --queries 3000 --max-df 20000 --top-k 60 --memory-limit 1GB --output-dir artifacts/blocking_token_wide
+.venv/Scripts/python.exe -u code/business_entity_resolution/src/train.py --candidate-dir artifacts/blocking_token_wide --output-dir artifacts/matcher_token_wide
+```
+
+The buffer limit is configurable because widening the token cutoff increases
+intermediate join size. Completed field tables are dropped before the next field
+is processed. It is not a process RSS limit. Each completed run includes country
+metrics and `missed_links.tsv`; labels are consulted only for evaluation/export.
+Pair features use an 8,192-entry preprocessing cache without changing their values.
+Repeated experiments on these development queries require a fresh untouched
+evaluation sample before reporting a final generalization score.
+
 Future final outputs must pass:
 
 ```powershell
