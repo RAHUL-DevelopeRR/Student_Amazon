@@ -39,3 +39,10 @@ wheels/
 .vscode/
 *.swp
 *.swo
+
+# Local data audit, model caches and competition outputs
+artifacts/
+output/
+models/
+tmp/
+*.duckdb*
