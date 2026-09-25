@@ -41,12 +41,44 @@
 - Generic python command is a Windows Store alias; use .venv/Scripts/python.exe.
 
 ## Next required work
-1. Measure fuzzy retrieval against full target corpus; cache indexes for throughput.
-2. Train LightGBM on hard negatives using identity-group splits.
-3. Tune set decisions/empty predictions on separate calibration data.
-4. Add compact-name and multilingual channels based on observed missed links.
-5. Generate test predictions, run official validator with --check-ids, package.
+1. Add cached compact-name, transliteration and multilingual retrieval channels.
+2. Re-run retrieval and matcher evaluation after those channels recover missed links.
+3. Generate test predictions, run the official validator with `--check-ids`, and package.
 
-No neural weights, model training, test predictions, leaderboard upload or Git push
-has been performed. Repository visibility was not changed. Existing untracked user
-documents remain untouched.
+No test predictions, leaderboard upload or repository visibility change has been
+performed. The supplied challenge documents remain local inputs.
+
+## Follow-up: learned matcher and realistic retrieval
+
+The initial no-training status above describes the first checkpoint. A learned
+LightGBM matcher is now implemented in `src/train.py` with 27 comparison features,
+identity-separated train/calibration/evaluation splits, saved model configuration,
+candidate-input hash, model reload verification and per-country error reports.
+Six tests pass, including token retrieval and learned feature/scoring checks.
+
+Reduced-corpus pilot: 610 training queries / 47,918 pairs, 190 calibration queries,
+200 evaluation queries. Calibration chose threshold 0.67. Evaluation macro F0.5
+0.974956, pair precision 0.986667, pair recall 0.965217. This remains optimistic
+because the target corpus was artificially reduced.
+
+Full-corpus character retrieval on 100 queries was stopped after a throughput
+measurement of about 375,000 target names per 45 seconds. No recall result was
+produced; see artifacts/blocking_full_100/run_status.json. Production needs cached
+indexes, not repeated text transforms.
+
+A new SQL token blocker scanned all 10,320,219 targets for 3,000 fixed queries in
+215.985 seconds. It ranks shared tokens with DF <=2000 separately for name/address,
+retains top 30 per source/field, and unions exact-name/address blocks. Recall:
+0.733365 (7,616 / 10,385 links), 253,385 candidates, 84.46 per query. Perfect-matcher
+macro-F0.5 ceiling: 0.852138. This is a full-target sampled-query result, not a
+full-production run. Retrieval currently imposes a material accuracy ceiling.
+
+The learned matcher was then run on those full-corpus token candidates: 1,809
+training queries / 151,079 pairs / 4,495 positives, 604 calibration queries and
+587 evaluation queries. Calibration chose threshold 0.52. Evaluation macro-F0.5
+was 0.791216, singleton accuracy 0.906250, non-singleton F0.5 0.784584, pair
+precision 0.958275 and pair recall 0.662819 (1,378 TP / 60 FP / 701 FN). Country
+macro-F0.5 was 0.760065 for India and 0.814487 for the US. The corresponding
+retrieval ceiling is 0.852138, so the remaining gap is primarily missed candidate
+links rather than the classifier alone. This is still an evaluation sample, not a
+test submission.

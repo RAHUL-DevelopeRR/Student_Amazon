@@ -9,6 +9,21 @@ from normalize import normalize, numeric_tokens, expanded, accent_fold
 
 
 class CoreTests(unittest.TestCase):
+    def test_matcher_features_and_scoring(self):
+        from features import pair_features
+        from train import score,fold
+        a=('S1-1','abc limited','12 road','France')
+        b=('S2-1','abc limited','12 road','France')
+        f=pair_features(a,b)
+        self.assertEqual(len(f),27)
+        self.assertEqual(f[0],1)
+        self.assertEqual(f[13],1)
+        self.assertEqual(fold('identity'),fold('identity'))
+        r=score(['a','b'],{'a':{'S2-1'},'b':set()},
+                {'a':['S2-1'],'b':['S2-2']},{'a':[.9],'b':[.2]},.5)
+        self.assertEqual(r['macro_f05'],1)
+        self.assertEqual(r['singleton_accuracy'],1)
+
     def test_metric(self):
         self.assertEqual(entity_f05([], []), 1)
         self.assertEqual(entity_f05([], ["x"]), 0)
@@ -96,6 +111,12 @@ class CoreTests(unittest.TestCase):
             candidates,_,_=exact_diagnostic(con,queries)
             self.assertEqual(candidates,[{"S2-1","S3-1"},set()])
             con.close()
+            import token_blocking
+            with patch('sys.argv',['token_blocking.py','--queries','2','--db',str(root/'artifacts/audit.duckdb'),'--output-dir',str(root/'token')]),patch.object(token_blocking,'log_experiment'):
+                token_blocking.main()
+            tokens=json.loads((root/'token/metrics.json').read_text())
+            self.assertEqual(tokens['candidate_recall'],1)
+            self.assertEqual(tokens['target_corpus_size'],4)
 
 
 if __name__ == "__main__":

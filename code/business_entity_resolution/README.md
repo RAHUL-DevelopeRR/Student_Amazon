@@ -64,9 +64,34 @@ the corpus per query batch; full S1 production requires cached indexes and more
 compute. Do not mistake bounded memory for adequate full-production throughput.
 
 `experiments/experiment_log.csv` records runs. Generated outputs/caches are ignored
-by Git. No final matcher, test predictions, or leaderboard submission is implemented
-in these phases. Feature extraction, train/predict and conflict resolution should be
-added after the audit and retrieval evidence, not represented by empty stubs.
+by Git. The learned matcher pilot is available:
+
+```powershell
+.venv/Scripts/python.exe -u code/business_entity_resolution/src/train.py --candidate-dir artifacts/blocking_pilot --output-dir artifacts/matcher_pilot
+```
+
+It builds 27 pair features and fits a fixed 180-tree LightGBM model. Normalized
+name/address/country identities are hashed into training (60%), calibration (20%)
+and evaluation (20%). Calibration alone chooses the decision threshold. IDs and
+country identity are excluded from model features. All retrieved negative pairs
+are retained. Missed retrieval positives count as false negatives in evaluation.
+Model, metadata, split assignments and evaluation errors are saved locally.
+The reduced corpus is easier than production: these are pilot scores, not
+leaderboard estimates. Production test inference and output validation remain.
+
+For a faster full-corpus token baseline (no injected true targets):
+
+```powershell
+.venv/Scripts/python.exe -u code/business_entity_resolution/src/token_blocking.py --queries 3000
+.venv/Scripts/python.exe -u code/business_entity_resolution/src/train.py --candidate-dir artifacts/blocking_token_full --output-dir artifacts/matcher_token_full
+```
+
+This scans every training target, then ranks candidates by summed IDF of shared
+name/address tokens with target frequency at most 2000. Top 30 per source and field
+are unioned with exact blocks. It is a lexical baseline: misspellings and cross-script
+names can still prevent retrieval. Memory is bounded using DuckDB disk spill.
+Query count is sampled; the target population is complete. Do not call this
+full-production inference or a France evaluation.
 
 Future final outputs must pass:
 
