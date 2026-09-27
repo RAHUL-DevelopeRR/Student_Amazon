@@ -222,3 +222,34 @@ Assistant execution plan: diagnose missed links, compare wider lexical retrieval
 against the same complete target population, retrain with unchanged query-group
 splits, record runtime/parameters and limitations, run tests, update project
 records, then commit and push verified work under the user's existing instruction.
+
+## User production-inference request — attachment received 2026-09-25
+
+Continue from commit `41ca17f` on `codex/entity-resolution-baseline`. Prioritize
+production-ready resumable inference rather than additional research or another
+model experiment. Freeze the saved 0.48-threshold model as baseline-v1 with hashes.
+Build deterministic, checksummed shards from test sources only, reuse normalized
+targets/indexes, retain exactly the candidates scored, preserve empty predictions,
+support France and all S1 entities, and never retrain during inference.
+
+Profile retrieval, candidate loading, features, model scoring and writing. Measure
+any proposed pruning or exact-name/address cascade on training data before using
+it. Run exactly 10,000 deterministic test queries and report candidate counts,
+timings, memory, sizes and a full-run projection. Evaluate the frozen logic on
+new training queries outside the prior 3,000, without subsequent tuning on them.
+
+Start the full 1,732,544-query test run only when runtime and validation are
+acceptable. Generate matching_results.tsv and candidate_pairs.tsv, run the
+unchanged official validator with `--check-ids`, independently check complete ID
+coverage/containment/France/no training IDs/no NaN, and require PASS before calling
+the result submission-ready. Do not upload to Unstop. Commit and push code and
+project records, excluding large generated artifacts.
+
+
+## User continuation — 2026-09-27
+
+"Continue from where it interrupted". Resume saved index checkpoints, complete
+the requested 10K pilot, cascade measurement and untouched validation, honor the
+full-run gate, then update project records and commit/push code only. The user's
+resource reply was "I’ll free memory now". The completed gate rejected a full
+local run; do not represent the partial pilot files as upload-ready.

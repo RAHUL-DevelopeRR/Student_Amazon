@@ -126,3 +126,84 @@ reused queries, not a fresh generalization estimate.
 Next: improve singleton precision and India errors, evaluate a union retaining
 complementary old candidates, build reusable full-population retrieval indexes,
 and assess the frozen approach on untouched queries before production inference.
+
+## Production inference implementation (2026-09-26)
+
+The user requested phases A-G: freeze baseline-v1, implement resumable inference,
+profile a deterministic 10,000-query test pilot, measure an exact-match cascade,
+evaluate untouched training queries, and only run the full submission when feasible.
+The existing 0.48-threshold LightGBM model is frozen without retraining; its hashes
+are recorded in `experiments/baseline-v1.json`. Generated models remain local.
+
+New scripts implement persistent normalized SQLite records, compact uint32 token
+posting lists, deterministic query shards, 32-query scoring batches, atomic output
+files, SHA-256 manifests, corruption recovery, frozen-model loading, threshold-only
+postprocessing, streaming assembly and official-validator execution. Candidate
+rules remain top 60 per source/field, max token DF 20,000, and exact block cap 100.
+Every retained candidate is scored. No cascade bypass or extra pruning is enabled.
+
+Test inference reads only test sources and the frozen model. Training validation
+is a separate explicit command, rejects development-group overlap and retains
+the original full training target population. Pilot outputs are explicitly partial.
+
+The index build initially failed when a 1GB DuckDB buffer attempted to window-sort
+all target strings. It now sorts narrow IDs by source and joins payloads afterward.
+Completed normalized source imports were reused on restart. An extended machine/
+tool interruption and low-memory interval affected elapsed build time; no speed
+claim is based on that interrupted build. Test subprocesses initially failed to
+start during the low-memory interval; reruns passed after the user freed memory.
+
+At this implementation checkpoint, full-size index builds and pilot/validation
+measurements are in progress. No final production output or leaderboard submission
+has been generated. The full-run gate also accounts for the official validator's
+in-memory candidate mapping, whose memory demand can greatly exceed inference RAM.
+
+
+## Production inference results (2026-09-27)
+
+Both persistent indexes completed after checkpoint recovery. Test: 1,732,544
+queries / 9,969,589 targets; train: 2,206,821 queries / 10,320,219 targets.
+Baseline-v1 remains unchanged at threshold 0.48, seed 42, max_df 20,000,
+top 60 per source/field and exact-block cap 100. No pruning or bypass was enabled.
+
+The exact 10,000-query test pilot scored 2,186,501 pairs (218.6501/query;
+P50/P90/P99 = 237/247/295). Measured seconds: candidate generation 90.858,
+candidate loading 107.719, features 336.074, model scoring 21.446, scoring-output
+writing 6.041, total 562.465. Candidate JSON writing adds 1.180 seconds already
+included in generation. Invocation wall time was 571.516 seconds. Sampled maximum
+RSS was 281,714,688 bytes; this is not a continuously measured peak.
+
+Pilot assembly produced 10,000 rows in each TSV, 31,973 matches, 747 empty
+predictions, and country counts India 4,662 / US 3,877 / France 1,461. It passed
+the unchanged official validator with --check-ids against an explicit 10K S1
+subset and all original test targets. This is NOT a full submission. Files:
+- artifacts/test_pilot_10k/assembled/matching_results.tsv: 541,774 bytes;
+  SHA-256 563a005c39730ee11061c664ee9e950944e60f3cf28690800076615050bd500b
+- artifacts/test_pilot_10k/assembled/candidate_pairs.tsv: 28,311,514 bytes;
+  SHA-256 1e28cccf14162429610062bb3f5713214cb0606d7473703f846cb31d34eca664
+
+Untouched 1,000-query validation against all training targets: macro F0.5
+0.872322; candidate recall 0.913537; pair precision 0.939697; pair recall
+0.793886; singleton accuracy 0.826923 (52 singleton queries); India F0.5
+0.835561; US F0.5 0.897553; 217.363 candidates/query. No tuning followed this
+first result. No France labels are available, so France accuracy is unknown.
+
+The development exact-name AND address rule had 127 TP / 0 FP and zero macro
+F0.5 change. It remains disabled. Indexed retrieval exactly reproduced 2,951 of
+3,000 prior SQL candidate sets; 949 pairs were added and 957 removed. The exact
+cause of those differences has not been established; no parity claim is made.
+
+The gate passed quality and disk but rejected runtime and validator RAM:
+27.069 hours projected inference, versus 14.927 hours remaining at the check;
+75% headroom plus assembly/validation would need approximately 49.4 hours.
+Official-validator candidate memory lower bound: 26,138,643,400 bytes (24.34 GiB),
+versus 3,422,281,728 available bytes. Actual validator memory would be higher.
+The full run was therefore not started. No complete upload file exists and
+nothing was uploaded to Unstop. A faster machine with sufficient validator RAM,
+or a separately measured implementation speedup, is required before reconsidering
+full inference. Keep this holdout frozen; do not tune on its result.
+
+Eight regression tests passed, including metric/retrieval, checkpoint/corruption,
+France/empty output, and official-validator fixtures. Python syntax and pip check
+passed. Detailed reproducible measurements are tracked in
+experiments/production-inference-20260927.json; large artifacts remain ignored.

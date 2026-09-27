@@ -1,0 +1,18 @@
+{
+  "baseline": "baseline-v1",
+  "source_commit": "41ca17f00280c231bec7648c4249b10c2ac82260",
+  "source_directory": "artifacts/matcher_token_wide",
+  "frozen_directory": "artifacts/baseline-v1",
+  "threshold": 0.48,
+  "feature_count": 27,
+  "model_sha256": "e0c7d877dbe2994a49be7f5e2d9441acbc126e9f7afffb89212faeaac12b2ddd",
+  "model_config_sha256": "20770b85edd79828c380e2ea000a9c49875891af6c73198cb496c9d92b31e68d",
+  "metrics_sha256": "8c7e4cc03210228e725751e14fef6810dd8538badd8c86f1e7b144fc08ba398f",
+  "splits_sha256": "a476b5853e80101d5b817a6fb9a028703d54f88f9790fb2867871f2f1ee6a6cf",
+  "features_sha256": "0e0cc0d0b40c36531e2ed9e3aeb6da6406e6fbb6340d8672363c6e238249fd77",
+  "normalize_sha256": "372e92c9ff4999c06843ea54357eb159f35e2aea17b8624630b32a8d2fa83b03",
+  "requirements_sha256": "3708407081ceaf5ae62dc41e29d780696695ba94c77a9eb41f468725093ab0f6",
+  "retrieval": {"max_df": 20000, "top_k_per_field_source": 60, "exact_cap": 100, "seed": 42},
+  "development_evaluation_macro_f05": 0.867876419020129,
+  "note": "Model copied without retraining. Generated model files remain local and excluded from Git. No unseen-test performance claim."
+}

@@ -1,0 +1,170 @@
+{
+  "date": "2026-09-27",
+  "pilot": {
+    "identity": {
+      "index_sha256": "09effaaa6192fd6e9b028aa42da305e245646554a2b9249ad8abf1697e1d6b2e",
+      "baseline_sha256": "5bc5bc825d8a4f30fcf643f84643bc37fea3b2b18f965b81622a612ff364b821",
+      "start": 0,
+      "limit": 10000,
+      "shard_size": 250,
+      "code": {
+        "build_test_candidates.py": "460321ed1b1303a7662f7ae94a6b7fac07cecb78884d0e03739eeaa067f84070",
+        "predict.py": "1fc43cf95ceffc49e123eff0aa9fadfbc801d4986c0258c14a1677abf72b6f38",
+        "postprocess.py": "2f6d61bad16e9837bcfc3ff4cb1925016c9a6c67998be565c8d0f54d07f6f586",
+        "features.py": "0e0cc0d0b40c36531e2ed9e3aeb6da6406e6fbb6340d8672363c6e238249fd77",
+        "normalize.py": "372e92c9ff4999c06843ea54357eb159f35e2aea17b8624630b32a8d2fa83b03"
+      }
+    },
+    "status": "complete",
+    "queries": 10000,
+    "pairs": 2186501,
+    "average_candidates": 218.6501,
+    "candidate_quantiles_p50_p90_p99": [
+      237.0,
+      247.0,
+      295.0
+    ],
+    "candidate_generation_seconds": 90.85800000000745,
+    "candidate_retrieval_seconds": 89.52000000000407,
+    "candidate_output_seconds": 1.1799999999857391,
+    "candidate_loading_seconds": 107.71899999998277,
+    "feature_seconds": 336.07399999996414,
+    "scoring_seconds": 21.446000000047206,
+    "output_seconds": 6.040999999990163,
+    "inference_seconds": 471.60699999999633,
+    "total_seconds": 562.4650000000038,
+    "this_invocation_seconds": 571.5160000000033,
+    "sampled_memory_max_bytes": 281714688,
+    "output_bytes": 28856252,
+    "projected_full_seconds": 97449.53609600067,
+    "projection_note": "Linear estimate excludes one-time index build, assembly and final validator; allow substantial headroom."
+  },
+  "assembly": {
+    "run_sha256": "983ba7958e65e788aab68a9335d853c1f4f0cd0d26ad134fcc336dfbe43e785d",
+    "rows": 10000,
+    "partial": true,
+    "pairs": 2186501,
+    "matches": 31973,
+    "empty_predictions": 747,
+    "countries": {
+      "India": 4662,
+      "US": 3877,
+      "France": 1461
+    },
+    "seconds": 44.062000000005355,
+    "files": {
+      "matching_results.tsv": {
+        "sha256": "563a005c39730ee11061c664ee9e950944e60f3cf28690800076615050bd500b",
+        "bytes": 541774
+      },
+      "candidate_pairs.tsv": {
+        "sha256": "1e28cccf14162429610062bb3f5713214cb0606d7473703f846cb31d34eca664",
+        "bytes": 28311514
+      }
+    },
+    "submission_ready": false,
+    "note": "Official full-test validator must still PASS. Partial outputs are not submissions."
+  },
+  "pilot_official_validator": {
+    "exit_code": 0,
+    "pass": true,
+    "pilot": true,
+    "command": [
+      "C:\\Users\\DELL\\Downloads\\6ab10eb3b23ba_student_resource\\.venv\\Scripts\\python.exe",
+      "-X",
+      "utf8",
+      "C:\\Users\\DELL\\Downloads\\6ab10eb3b23ba_student_resource\\utils\\validate_submission.py",
+      "--matching",
+      "artifacts\\test_pilot_10k\\assembled\\matching_results.tsv",
+      "--candidate",
+      "artifacts\\test_pilot_10k\\assembled\\candidate_pairs.tsv",
+      "--test-dir",
+      "artifacts\\test_pilot_10k\\assembled\\pilot_validation_inputs",
+      "--check-ids"
+    ],
+    "validator_sha256": "f96f59934383a15095914f507620c078c474e8f9c60e864b2d051ed173a22dfc",
+    "files": {
+      "matching_results.tsv": {
+        "sha256": "563a005c39730ee11061c664ee9e950944e60f3cf28690800076615050bd500b",
+        "bytes": 541774
+      },
+      "candidate_pairs.tsv": {
+        "sha256": "1e28cccf14162429610062bb3f5713214cb0606d7473703f846cb31d34eca664",
+        "bytes": 28311514
+      }
+    },
+    "submission_ready": false
+  },
+  "untouched_validation": {
+    "scope": "untouched_training_queries_full_target_corpus",
+    "queries": 1000,
+    "macro_f05": 0.872322435736382,
+    "candidate_recall": 0.9135371179039301,
+    "pair_precision": 0.9396967608545831,
+    "pair_recall": 0.7938864628820961,
+    "singleton_accuracy": 0.8269230769230769,
+    "singleton_queries": 52,
+    "by_country": {
+      "India": 0.8355608465605625,
+      "US": 0.8975534084084873
+    },
+    "tp": 2727,
+    "fp": 175,
+    "fn": 708,
+    "candidates_per_query": 217.363,
+    "policy_sha256": "9e840cd3dc9e8283deb19a766b266b0e2795701bd5c6e87ec8be110c34b15de3",
+    "baseline_sha256": "5bc5bc825d8a4f30fcf643f84643bc37fea3b2b18f965b81622a612ff364b821",
+    "truth_sha256": "70bc1d8a16c667e0155c2105d0ab2ebe41d7e7a85d8a529e3ca81c6c3a5af037",
+    "inference_code": {
+      "build_test_candidates.py": "460321ed1b1303a7662f7ae94a6b7fac07cecb78884d0e03739eeaa067f84070",
+      "predict.py": "1fc43cf95ceffc49e123eff0aa9fadfbc801d4986c0258c14a1677abf72b6f38",
+      "postprocess.py": "2f6d61bad16e9837bcfc3ff4cb1925016c9a6c67998be565c8d0f54d07f6f586",
+      "features.py": "0e0cc0d0b40c36531e2ed9e3aeb6da6406e6fbb6340d8672363c6e238249fd77",
+      "normalize.py": "372e92c9ff4999c06843ea54357eb159f35e2aea17b8624630b32a8d2fa83b03"
+    },
+    "start_ordinal": 3001,
+    "last_ordinal": 4000,
+    "tuning_after_result": false
+  },
+  "cascade": {
+    "scope": "development_3000_full_target_corpus",
+    "rule": "nonempty exact normalized name AND address, compatible country, within scored candidates",
+    "eligible_pairs": 127,
+    "tp": 127,
+    "fp": 0,
+    "precision": 1.0,
+    "baseline_macro_f05": 0.8760728207377221,
+    "cascade_macro_f05": 0.8760728207377221,
+    "macro_f05_delta": 0.0,
+    "enabled": false,
+    "retrieval_parity_with_previous_SQL_run": {
+      "queries": 3000,
+      "identical_candidate_sets": 2951,
+      "added_pairs": 949,
+      "removed_pairs": 957
+    },
+    "decision": "Measure only; retain frozen model scoring for the first submission."
+  },
+  "gate": {
+    "quality_gate_pass": true,
+    "minimums": {
+      "macro_f05": 0.82,
+      "candidate_recall": 0.88,
+      "pair_precision": 0.92
+    },
+    "remaining_seconds": 53738.547171,
+    "projected_inference_seconds": 97449.53609600067,
+    "runtime_gate_pass": false,
+    "projected_additional_disk_bytes": 13998523354,
+    "free_disk_bytes": 22669955072,
+    "disk_gate_pass": true,
+    "official_validator_candidate_memory_lower_bound_bytes": 26138643400,
+    "available_physical_memory_bytes": 3422281728,
+    "validator_memory_gate_pass": false,
+    "deadline_utc": "2026-09-27T18:29:00+00:00",
+    "note": "Runtime includes 75% headroom plus 2h for assembly/validation. Validator bound excludes other large mappings, so real memory is greater.",
+    "full_run_allowed": false
+  },
+  "tests": "8 unittest tests passed; pip check passed",
+  "full_submission_generated": false
+}

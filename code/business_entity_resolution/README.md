@@ -116,3 +116,84 @@ Future final outputs must pass:
 
 Treat matches outside the exact scored candidate set as a pipeline failure even
 though the official helper only warns. It skips ID existence by default.
+
+## Resumable frozen-model inference
+
+Measured status (27 Sep): the 10K pilot passed the official validator, and fresh
+1K training validation reached macro F0.5 0.872322. The full-run gate failed:
+27.1 hours projected inference and at least 24.3 GiB of validator candidate RAM.
+No complete submission was generated. See `experiments/production-inference-20260927.json`.
+
+The production path does not import the audit/training code or read ground truth.
+It builds a separate index from three explicitly selected source TSVs. The default
+is test. SQLite stores normalized records and compact uint32 token postings;
+NumPy aggregates shared-token IDF and retains top 60 per field/source. Exact blocks
+retain the existing cap of 100. Global target token frequency remains capped at
+20,000. Country filtering happens before top-k. No new candidate pruning, neural
+model, retraining, or deterministic scoring bypass is enabled.
+
+Freeze the existing model once (the CLI can do this when predicting):
+
+```powershell
+.venv/Scripts/python.exe -u code/business_entity_resolution/src/build_test_candidates.py
+.venv/Scripts/python.exe -u code/business_entity_resolution/src/predict.py --freeze-from artifacts/matcher_token_wide --limit 10000 --output-dir artifacts/test_pilot_10k
+.venv/Scripts/python.exe code/business_entity_resolution/src/assemble_submission.py --run-dir artifacts/test_pilot_10k --output-dir artifacts/test_pilot_10k/assembled --allow-partial
+.venv/Scripts/python.exe -X utf8 code/business_entity_resolution/src/validate_outputs.py --output-dir artifacts/test_pilot_10k/assembled --pilot
+```
+
+`baseline-v1` copies model, settings, metrics and split assignments with SHA-256
+checksums and feature/dependency fingerprints. An existing frozen baseline cannot
+be silently overwritten. Index imports checkpoint after each source; posting
+exports checkpoint by field and bucket. A completed index is verified against its
+input and artifact hashes on build reuse. Interrupted source imports restart that
+source. Build scratch is retained for recovery and consumes additional disk.
+
+S1 order is deterministic `md5(entity_id || '42'), entity_id`. Each 250-query
+retrieval shard and each scored output has a checksum manifest. Files are written
+to temporary paths and renamed only after completion; corrupt or partial shards
+are regenerated. Run signatures reject changed model, policy or feature code.
+Scoring loads at most 32 queries' candidate records/features at once. Empty and
+multiple matches are retained. `candidate_pairs.tsv` is written from the exact
+candidate IDs supplied to the LightGBM model, not from an earlier unscored pool.
+
+The pilot's `run.json` contains separate retrieval, candidate loading, feature,
+model and output timings, total time, sampled RSS, candidate quantiles, output
+bytes and a linear full-run projection. Retrieval timing includes its JSONL shard
+writing. Reused-shard timings are original computation times; invocation wall time
+is separately recorded. System sleep and other workloads affect wall time.
+
+Untouched validation uses an entirely separate training index and the next 1,000
+queries after the 3,000 development IDs. It checks development ID consistency and
+rejects overlapping normalized identities before inference. Labels are read only
+by the explicit training validation command. Do not tune after its first result.
+
+```powershell
+.venv/Scripts/python.exe -u code/business_entity_resolution/src/build_test_candidates.py --split train --data-dir dataset/train --index artifacts/train_inference_index
+.venv/Scripts/python.exe -u code/business_entity_resolution/src/validate_frozen.py --cascade --output-dir artifacts/cascade_measurement
+.venv/Scripts/python.exe -u code/business_entity_resolution/src/validate_frozen.py
+.venv/Scripts/python.exe code/business_entity_resolution/src/submission_gate.py
+```
+
+The cascade command measures exact nonempty name AND address matches on development
+queries, including precision and macro-F0.5 change, but keeps the bypass disabled.
+It also compares indexed retrieval with the previous SQL candidates. The gate
+requires macro-F0.5 >=0.82, recall >=0.88 and precision >=0.92, fixed before reading
+fresh validation. Runtime needs 75% headroom plus two hours for assembly/validation.
+Disk and official-validator memory must also fit. These are first-submission
+feasibility checks, not a winning-score estimate. Do not start the full run if any
+gate fails. The official validator retains all candidates in Python memory; this
+can require substantially more RAM than inference itself.
+
+Only after the gate passes:
+
+```powershell
+.venv/Scripts/python.exe -u code/business_entity_resolution/src/predict.py --limit 1732544 --output-dir artifacts/test_full
+.venv/Scripts/python.exe code/business_entity_resolution/src/assemble_submission.py --run-dir artifacts/test_full
+.venv/Scripts/python.exe -X utf8 code/business_entity_resolution/src/validate_outputs.py --output-dir output
+```
+
+The full assembler refuses partial coverage. It independently verifies S1 order,
+each target's existence, duplicate-free lists, match containment and country counts.
+Partial pilot files are never submission-ready. Assembly metadata remains marked
+`submission_ready: false` until the complete official validation has been observed
+to PASS. No script uploads files to Unstop.

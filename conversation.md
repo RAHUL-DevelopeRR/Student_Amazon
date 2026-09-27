@@ -1500,3 +1500,67 @@ The subsequent wide-candidate matcher completed with macro-F0.5 0.867876 versus
 threshold 0.48; runtime was 750.422s. The saved model passed prediction reload
 verification. These are development comparisons; the singleton regression and
 remaining India errors are priorities for the next iteration.
+
+
+## User follow-ups and continuation (2026-09-27)
+
+- "what is the progress here?? what happening here??"
+- "So, what is the next step or next plan realisticly"
+- "what is the file needed to be uploaded now/??"
+- User supplied the production-inference phases A-G request, recorded in prompt.md.
+- "I’ll free memory now"
+- "Continue from where it interrupt"
+- "Continue from where it interrupted"
+
+The following is an execution summary, not a verbatim transcript of every tool
+call or intermediate update.
+
+
+## Production inference results (2026-09-27)
+
+Both persistent indexes completed after checkpoint recovery. Test: 1,732,544
+queries / 9,969,589 targets; train: 2,206,821 queries / 10,320,219 targets.
+Baseline-v1 remains unchanged at threshold 0.48, seed 42, max_df 20,000,
+top 60 per source/field and exact-block cap 100. No pruning or bypass was enabled.
+
+The exact 10,000-query test pilot scored 2,186,501 pairs (218.6501/query;
+P50/P90/P99 = 237/247/295). Measured seconds: candidate generation 90.858,
+candidate loading 107.719, features 336.074, model scoring 21.446, scoring-output
+writing 6.041, total 562.465. Candidate JSON writing adds 1.180 seconds already
+included in generation. Invocation wall time was 571.516 seconds. Sampled maximum
+RSS was 281,714,688 bytes; this is not a continuously measured peak.
+
+Pilot assembly produced 10,000 rows in each TSV, 31,973 matches, 747 empty
+predictions, and country counts India 4,662 / US 3,877 / France 1,461. It passed
+the unchanged official validator with --check-ids against an explicit 10K S1
+subset and all original test targets. This is NOT a full submission. Files:
+- artifacts/test_pilot_10k/assembled/matching_results.tsv: 541,774 bytes;
+  SHA-256 563a005c39730ee11061c664ee9e950944e60f3cf28690800076615050bd500b
+- artifacts/test_pilot_10k/assembled/candidate_pairs.tsv: 28,311,514 bytes;
+  SHA-256 1e28cccf14162429610062bb3f5713214cb0606d7473703f846cb31d34eca664
+
+Untouched 1,000-query validation against all training targets: macro F0.5
+0.872322; candidate recall 0.913537; pair precision 0.939697; pair recall
+0.793886; singleton accuracy 0.826923 (52 singleton queries); India F0.5
+0.835561; US F0.5 0.897553; 217.363 candidates/query. No tuning followed this
+first result. No France labels are available, so France accuracy is unknown.
+
+The development exact-name AND address rule had 127 TP / 0 FP and zero macro
+F0.5 change. It remains disabled. Indexed retrieval exactly reproduced 2,951 of
+3,000 prior SQL candidate sets; 949 pairs were added and 957 removed. The exact
+cause of those differences has not been established; no parity claim is made.
+
+The gate passed quality and disk but rejected runtime and validator RAM:
+27.069 hours projected inference, versus 14.927 hours remaining at the check;
+75% headroom plus assembly/validation would need approximately 49.4 hours.
+Official-validator candidate memory lower bound: 26,138,643,400 bytes (24.34 GiB),
+versus 3,422,281,728 available bytes. Actual validator memory would be higher.
+The full run was therefore not started. No complete upload file exists and
+nothing was uploaded to Unstop. A faster machine with sufficient validator RAM,
+or a separately measured implementation speedup, is required before reconsidering
+full inference. Keep this holdout frozen; do not tune on its result.
+
+Eight regression tests passed, including metric/retrieval, checkpoint/corruption,
+France/empty output, and official-validator fixtures. Python syntax and pip check
+passed. Detailed reproducible measurements are tracked in
+experiments/production-inference-20260927.json; large artifacts remain ignored.
