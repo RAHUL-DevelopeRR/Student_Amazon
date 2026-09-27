@@ -1586,5 +1586,6 @@ User shared screenshots of Evaluated 0.829 and leaders near 0.992, and requested
 User supplied team members Rahul S, Kumaravel K, Sibidharan S, Rishanth P and
 requested model working directory, complete context for Antigravity, GitHub
 push, and continuation. Handoff document and zip were created. Challenger AWS
-pilot passed exact parity; full command 4b7e9bd1-16e4-4dc4-838e-de6151411622
-was started while the baseline remained preserved.
+pilot passed exact parity; the first full command failed on shell quoting and
+corrected command bf6e5c7c-f728-4b17-8308-9c8dec814507 was started while the
+baseline remained preserved.

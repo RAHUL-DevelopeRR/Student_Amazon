@@ -249,5 +249,5 @@ the previously untouched 1K evaluation; do not tune on that evaluation.
 Correction: baseline was uploaded to Unstop and user reported evaluated public
 score 0.829. Challenger untouched 1K holdout reached macro F0.905974 versus
 0.868896 baseline. Its AWS 10K pilot took 46.78 seconds with exact parity;
-full command 4b7e9bd1-16e4-4dc4-838e-de6151411622 is running. Preserve baseline
+corrected full command bf6e5c7c-f728-4b17-8308-9c8dec814507 is running. Preserve baseline
 until challenger assembly and official validation pass.

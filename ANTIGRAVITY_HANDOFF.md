@@ -70,8 +70,10 @@ replacement inference.
 
 Corrected AWS pilot: 10,000 queries, 2,283,028 candidate pairs, 46.78 seconds
 wall time, and exact serial/parallel parity. Linear full projection: 8,105
-seconds. Full challenger command 4b7e9bd1-16e4-4dc4-838e-de6151411622 is
-running under /opt/amazon-ml-challenger; baseline remains preserved.
+seconds. First full challenger command 4b7e9bd1-16e4-4dc4-838e-de6151411622
+failed only because of shell quoting. Corrected command
+bf6e5c7c-f728-4b17-8308-9c8dec814507 is InProgress under
+/opt/amazon-ml-challenger; baseline remains preserved.
 
 ## Important files
 

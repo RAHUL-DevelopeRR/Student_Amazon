@@ -265,4 +265,5 @@ the previously untouched 1K evaluation; do not tune on that evaluation.
 Challenger untouched 1K holdout: macro F0.905974 versus 0.868896 baseline,
 precision 0.952117 and candidate recall 0.926184. AWS 10K pilot completed in
 46.78 seconds with exact serial/parallel parity; full command
-4b7e9bd1-16e4-4dc4-838e-de6151411622 is running. Baseline remains fallback.
+the first full command failed due shell quoting; corrected command
+bf6e5c7c-f728-4b17-8308-9c8dec814507 is InProgress. Baseline remains fallback.
