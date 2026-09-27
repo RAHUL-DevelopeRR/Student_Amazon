@@ -279,3 +279,6 @@ bf6e5c7c-f728-4b17-8308-9c8dec814507 is InProgress. Baseline remains fallback.
 - Separate ZIP upload location is not exposed in the observed portal UI.
 - Baseline final ZIP completed and passed CRC verification: 2,215,069,858 bytes,
   SHA-256 0f66d5b07cdd56a76c34f81b4896eef6146407a69d00cdde36d68e3f8d96c764.
+- Challenger full inference, assembly, `--check-ids` validation and CRC-verified
+  ZIP completed on AWS. Challenger TSV was submitted to Unstop; portal showed
+  evaluation in progress at 0%, so no new leaderboard score is confirmed yet.

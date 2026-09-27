@@ -287,3 +287,10 @@ Baseline ZIP subsequently completed with CRC verification: 2,215,069,858 bytes,
 SHA-256 0f66d5b07cdd56a76c34f81b4896eef6146407a69d00cdde36d68e3f8d96c764.
 User does not know of a separate ZIP submission link. Continue preparing the
 challenger; do not describe any ZIP as submitted without a portal receipt.
+
+The challenger `matching_results.tsv` was downloaded locally and hash-verified
+against the official AWS validation report, then attached to the Unstop round
+and submitted through the visible `Submit & Evaluate` control. The portal showed
+the selected filename and `Please Wait — 0%`; final score was not yet visible
+when Chrome disconnected. AWS challenger ZIP remains verified in private S3;
+no claim about its leaderboard score is made.

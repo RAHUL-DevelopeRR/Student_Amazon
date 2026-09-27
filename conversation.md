@@ -1602,3 +1602,7 @@ reproduction, licensing and validated ZIP packaging. Eight regression tests pass
 The requested rank and score remain goals, not achieved results or guarantees.
 Only the matching TSV upload is visible; user was asked for separate official
 ZIP upload instructions while independent preparation continues.
+
+The completed challenger TSV passed the official validator and was attached to
+the Unstop form. The visible portal state changed to `Please Wait — 0%` after
+Submit & Evaluate. Chrome then disconnected before the evaluated score appeared.
