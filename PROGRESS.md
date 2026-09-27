@@ -293,3 +293,5 @@ bf6e5c7c-f728-4b17-8308-9c8dec814507 is InProgress. Baseline remains fallback.
   `s3://amazon-ml-608942062000-20260927/results/challenger-final/TrailingZeros_submission.zip`
   (2,313,668,645 bytes; SHA-256
   `c0da21f7663a2e933d8fe6c4a06733453b640961d50f367fe605fdae3b797785`).
+- The same archive was downloaded to `output/TrailingZeros_submission.zip`;
+  local byte count and SHA-256 match the verified S3 object.

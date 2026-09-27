@@ -159,3 +159,4 @@ CRC-verified challenger archive remains ready in private S3 at
 `results/challenger-final/TrailingZeros_submission.zip` (2,313,668,645 bytes,
 SHA-256 `c0da21f7663a2e933d8fe6c4a06733453b640961d50f367fe605fdae3b797785`).
 Do not state that this ZIP was submitted without an organizer upload receipt.
+The identical, hash-verified local copy is `output/TrailingZeros_submission.zip`.

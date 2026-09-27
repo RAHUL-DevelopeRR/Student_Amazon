@@ -303,3 +303,5 @@ no visible final-ZIP control. The final ZIP is verified in private S3 at
 SHA-256 `c0da21f7663a2e933d8fe6c4a06733453b640961d50f367fe605fdae3b797785`.
 Treat the TSV as submitted and the ZIP as ready but not uploaded until an official
 separate route or receipt exists.
+The archive is also present locally at `output/TrailingZeros_submission.zip`;
+its 2,313,668,645-byte size and SHA-256 match the S3 copy.
