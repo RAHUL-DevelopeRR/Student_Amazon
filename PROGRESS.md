@@ -282,3 +282,14 @@ bf6e5c7c-f728-4b17-8308-9c8dec814507 is InProgress. Baseline remains fallback.
 - Challenger full inference, assembly, `--check-ids` validation and CRC-verified
   ZIP completed on AWS. Challenger TSV was submitted to Unstop; portal showed
   evaluation in progress at 0%, so no new leaderboard score is confirmed yet.
+
+## Final portal result — 2026-09-27 23:44 IST
+
+- Unstop evaluated the challenger upload at **0.880**, up from **0.829**.
+- The live round exposes only the `matching_results.tsv` upload and has no ZIP
+  upload control. The TSV is submitted; the final ZIP is prepared but is not
+  uploaded without a separate organizer receipt.
+- Verified challenger package in private S3:
+  `s3://amazon-ml-608942062000-20260927/results/challenger-final/TrailingZeros_submission.zip`
+  (2,313,668,645 bytes; SHA-256
+  `c0da21f7663a2e933d8fe6c4a06733453b640961d50f367fe605fdae3b797785`).

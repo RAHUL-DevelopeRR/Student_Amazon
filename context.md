@@ -294,3 +294,12 @@ and submitted through the visible `Submit & Evaluate` control. The portal showed
 the selected filename and `Please Wait — 0%`; final score was not yet visible
 when Chrome disconnected. AWS challenger ZIP remains verified in private S3;
 no claim about its leaderboard score is made.
+
+The submitted challenger was subsequently evaluated by Unstop at **0.880** at
+23:36 IST, improving the earlier 0.829 score by 0.051. A fresh connected view of
+the active round again showed only the `matching_results.tsv` uploader; there is
+no visible final-ZIP control. The final ZIP is verified in private S3 at
+`results/challenger-final/TrailingZeros_submission.zip`, size 2,313,668,645 bytes,
+SHA-256 `c0da21f7663a2e933d8fe6c4a06733453b640961d50f367fe605fdae3b797785`.
+Treat the TSV as submitted and the ZIP as ready but not uploaded until an official
+separate route or receipt exists.

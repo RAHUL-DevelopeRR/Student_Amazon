@@ -149,3 +149,13 @@ No new training/scoring changes were made in this continuation. Eight regression
 tests passed; the fresh challenger validation remains macro F0.5 0.905974,
 precision 0.952117, recall 0.849462 on 1,000 queries against 10,320,219 targets.
 Neither 0.999 nor a top-percentile finish is established.
+
+## Final evaluated challenger — 27 September 2026, 23:44 IST
+
+The challenger `matching_results.tsv` is evaluated on Unstop at **0.880**, an
+absolute gain of 0.051 over the earlier 0.829 submission. The active round still
+offers only the matching TSV uploader; no final-ZIP control is visible. The
+CRC-verified challenger archive remains ready in private S3 at
+`results/challenger-final/TrailingZeros_submission.zip` (2,313,668,645 bytes,
+SHA-256 `c0da21f7663a2e933d8fe6c4a06733453b640961d50f367fe605fdae3b797785`).
+Do not state that this ZIP was submitted without an organizer upload receipt.
