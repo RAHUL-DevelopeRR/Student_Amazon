@@ -1577,3 +1577,14 @@ launched. Prepared parallel frozen inference and Linux memory preflight locally.
 User: Continue from where it is interrupted
 Assistant: Confirmed full AWS command succeeded and S3 outputs exist. Chrome
 blocked validation report download; final report and local hash review pending.
+
+
+## 2026-09-27 score follow-up
+User shared screenshots of Evaluated 0.829 and leaders near 0.992, and requested urgent improvements before the deadline. Assistant confirmed the gap, explained the development retrieval ceiling near 0.96, and started numeric-feature and combined-field retrieval experiments. No top-rank guarantee.
+
+## 2026-09-27 handoff follow-up
+User supplied team members Rahul S, Kumaravel K, Sibidharan S, Rishanth P and
+requested model working directory, complete context for Antigravity, GitHub
+push, and continuation. Handoff document and zip were created. Challenger AWS
+pilot passed exact parity; full command 4b7e9bd1-16e4-4dc4-838e-de6151411622
+was started while the baseline remained preserved.

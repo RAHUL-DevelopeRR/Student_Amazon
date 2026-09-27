@@ -122,7 +122,8 @@ def build(data,index,split='test'):
 
 
 class Retriever:
-    def __init__(self,index):
+    def __init__(self,index,joint_top_k=0):
+        self.joint_top_k=joint_top_k
         self.index=Path(index);self.meta=read_json(self.index/'manifest.json')
         self.records=sqlite(self.index/'records.sqlite',True)
         self.postings=sqlite(self.index/'postings.sqlite',True)
@@ -158,6 +159,9 @@ class Retriever:
                 positions=np.flatnonzero(source)
                 order=np.lexsort((ids[positions],-scores[positions]))[:POLICY['top_k']]
                 selected.update(map(int,ids[positions[order]]))
+        if self.joint_top_k:
+            from probe_joint_retrieval import joint
+            selected.update(joint(self,q,self.joint_top_k))
         return sorted(selected)
 
     def query_rows(self,start,count):
@@ -180,6 +184,8 @@ def candidate_shard(retriever,directory,start,count):
     dest=directory/f'{start:09d}.candidates.jsonl'
     identity={'index':sha256(retriever.index/'manifest.json'),'start':start,'count':count,
               'code':code_hash(['build_test_candidates.py','normalize.py'])}
+    if retriever.joint_top_k:
+        identity.update(joint_top_k=retriever.joint_top_k,joint_code=sha256(Path(__file__).with_name('probe_joint_retrieval.py')))
     if valid(dest,identity): return dest
     rows=retriever.query_rows(start,count)
     if len(rows)!=count: raise ValueError('Query range outside index')

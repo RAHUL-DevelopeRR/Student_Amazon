@@ -14,11 +14,17 @@ from inference_common import sha256,code_hash,read_json,seal,valid,freeze,sample
 
 
 def score_shard(candidate,directory,records,model,threshold,model_hash):
+    feature_fn=pair_features
+    if model.num_feature()==51:
+        from challenger_features import enhanced
+        feature_fn=enhanced
     directory=Path(directory);directory.mkdir(parents=True,exist_ok=True)
     stem=Path(candidate).name.split('.')[0]
     matching=directory/(stem+'.matching.tsv');scored=directory/(stem+'.scored.tsv')
     identity={'candidate_sha256':sha256(candidate),'model':model_hash,'threshold':threshold,
               'code':code_hash(['features.py','normalize.py','postprocess.py','predict.py'])}
+    if model.num_feature()==51:
+        identity['extension']=sha256(Path(__file__).with_name('challenger_features.py'))
     if valid(matching,identity) and valid(scored,identity): return matching,scored
     stats={k:0.0 for k in ['candidate_loading_seconds','feature_seconds','scoring_seconds','output_seconds']}
     total=time.monotonic();pairs=rows=0
@@ -38,7 +44,7 @@ def score_shard(candidate,directory,records,model,threshold,model_hash):
             if len(targets)!=len(ids): raise ValueError('Candidate target absent from index')
             stats['candidate_loading_seconds']+=time.monotonic()-start
             start=time.monotonic()
-            x=np.asarray([pair_features(q,targets[i]) for q,ids in batch for i in ids],dtype=np.float32).reshape(-1,27)
+            x=np.asarray([feature_fn(q,targets[i]) for q,ids in batch for i in ids],dtype=np.float32).reshape(-1,model.num_feature())
             stats['feature_seconds']+=time.monotonic()-start
             start=time.monotonic();prob=model.predict(x,num_threads=2) if len(x) else np.empty(0)
             stats['scoring_seconds']+=time.monotonic()-start
@@ -63,8 +69,10 @@ def run(index,baseline,output,start=0,limit=10000,shard_size=250):
         if sha256(baseline/name)!=h: raise ValueError('Frozen baseline corrupted')
     if frozen['identity']['code']!=code_hash(['features.py','normalize.py']): raise ValueError('Frozen feature code changed')
     model=lgb.Booster(model_file=str(baseline/'model.txt'))
-    if model.num_feature()!=27 or config['feature_count']!=27: raise ValueError('Wrong model schema')
-    retriever=Retriever(index)
+    if model.num_feature() not in (27,51) or config['feature_count']!=model.num_feature(): raise ValueError('Wrong model schema')
+    if model.num_feature()==51 and config.get('feature_extension_sha256')!=sha256(Path(__file__).with_name('challenger_features.py')): raise ValueError('Feature extension changed')
+    if config.get('joint_top_k') and config.get('joint_code_sha256')!=sha256(Path(__file__).with_name('probe_joint_retrieval.py')): raise ValueError('Joint retrieval changed')
+    retriever=Retriever(index,config.get('joint_top_k',0))
     if limit<=0 or shard_size<=0 or start<0 or start+limit>retriever.meta['queries']: raise ValueError('Invalid inference range')
     identity={'index_sha256':sha256(index/'manifest.json'),'baseline_sha256':sha256(baseline/'manifest.json'),
               'start':start,'limit':limit,'shard_size':shard_size,

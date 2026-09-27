@@ -1,3 +1,37 @@
+# Submitted baseline and reproduction (27 September 2026)
+
+The first full submission scored **0.829** on the public portal. Both full TSVs
+passed the supplied official validator with `--check-ids`. Earlier dated notes
+below describe development checkpoints and are superseded by this result.
+
+From the package root, place the supplied `dataset/` directory and official
+`utils/validate_submission.py` at their original paths. Use Python 3.12 and:
+
+```sh
+python -m venv .venv
+# Windows: use .venv/Scripts/python.exe in place of .venv/bin/python
+.venv/bin/python -m pip install -r code/business_entity_resolution/requirements.txt
+.venv/bin/python -m unittest discover -s code/business_entity_resolution/src -p 'test_*.py'
+.venv/bin/python -u code/business_entity_resolution/src/profile_data.py
+.venv/bin/python -u code/business_entity_resolution/src/token_blocking.py --queries 3000 --max-df 20000 --top-k 60 --memory-limit 1GB --output-dir artifacts/blocking_token_wide
+.venv/bin/python -u code/business_entity_resolution/src/train.py --candidate-dir artifacts/blocking_token_wide --output-dir artifacts/matcher_token_wide
+.venv/bin/python -u code/business_entity_resolution/src/build_test_candidates.py
+.venv/bin/python -u code/business_entity_resolution/src/predict.py --freeze-from artifacts/matcher_token_wide --limit 1732544 --output-dir artifacts/reproduced_full
+.venv/bin/python code/business_entity_resolution/src/assemble_submission.py --run-dir artifacts/reproduced_full --output-dir output
+.venv/bin/python -X utf8 code/business_entity_resolution/src/validate_outputs.py --output-dir output
+```
+
+Use an empty artifacts directory for a clean rebuild. Indexing, training and
+serial inference take longer than the reported cloud parallel inference. Allow
+64 GiB RAM for the official validator, which retains large candidate mappings.
+All matching data comes from the supplied competition files. No external model
+weights are used. The self-trained LightGBM model uses 180 trees and 27 features.
+The `challenger_*`, `train_challenger.py`, `validate_challenger.py` and
+`probe_joint_retrieval.py` files are separate experiments and do not affect the
+baseline commands or the first submitted output.
+
+---
+
 # Reproducible baseline: phases 1-4
 
 Python 3.12 tested. Run from the repository root. No external business data or

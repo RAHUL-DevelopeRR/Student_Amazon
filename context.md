@@ -226,3 +226,28 @@ AWS Core tools disappeared from available tools; browser is connected but Chrome
 blocks S3 download with ERR_BLOCKED_BY_CLIENT. Retrieve reports and outputs next.
 All 8 local tests also passed after explicit spawn change. No leaderboard upload
 has occurred; no rank is known. Instance automatic stop remains previously set.
+
+
+## Verified submission and challenger work — 2026-09-27 19:02 IST
+The cloud official validator passed with --check-ids for all 1,732,544 S1 rows.
+The locally downloaded matching_results.tsv is 95,070,732 bytes and SHA-256
+ae40581d4d6d787af4f8277bb027230b87e65af8eada76182ad7e4f1aa6fa8a9.
+The user submitted it; their screenshot shows Evaluated, score 0.829,
+27 September 18:54 IST, team TrailingZeros. The displayed leaders are near 0.992.
+This supersedes earlier notes that no submission exists. Top-500 >0.986 is a
+user report, not independently verified.
+The full candidate set has 379,701,216 pairs, 5,633,986 accepted links, and
+124,005 empty predictions. Candidate file SHA-256 is
+9183b60e7bf26250cc1707414d94cc51f3a4c69a41840a8a640bf0c89279b935.
+Cloud outputs remain in private S3. Local candidate_pairs.tsv is an INCOMPLETE
+download and must not be packaged or submitted. Cloud gzip recovery started.
+A development-only challenger is running with additional numeric/token features
+and two tree-capacity settings; separate combined-field retrieval probe is running.
+No new quality result or replacement submission yet. Preserve baseline-v1 and
+the previously untouched 1K evaluation; do not tune on that evaluation.
+
+Correction: baseline was uploaded to Unstop and user reported evaluated public
+score 0.829. Challenger untouched 1K holdout reached macro F0.905974 versus
+0.868896 baseline. Its AWS 10K pilot took 46.78 seconds with exact parity;
+full command 4b7e9bd1-16e4-4dc4-838e-de6151411622 is running. Preserve baseline
+until challenger assembly and official validation pass.
