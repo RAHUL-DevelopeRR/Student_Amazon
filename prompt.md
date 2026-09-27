@@ -253,3 +253,7 @@ the requested 10K pilot, cascade measurement and untouched validation, honor the
 full-run gate, then update project records and commit/push code only. The user's
 resource reply was "I’ll free memory now". The completed gate rejected a full
 local run; do not represent the partial pilot files as upload-ready.
+
+## 2026-09-27 continuation
+COntinue from where it interrupted.
+Browser reconnection reply: ready

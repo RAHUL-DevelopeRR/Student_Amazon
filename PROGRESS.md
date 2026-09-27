@@ -207,3 +207,16 @@ Eight regression tests passed, including metric/retrieval, checkpoint/corruption
 France/empty output, and official-validator fixtures. Python syntax and pip check
 passed. Detailed reproducible measurements are tracked in
 experiments/production-inference-20260927.json; large artifacts remain ignored.
+
+## 2026-09-27 cloud continuation
+AWS Virginia live quota: 8 standard on-demand vCPUs (0 used). The 16-vCPU proposal
+cannot launch within this quota. No paid resource was created. Browser control
+became unavailable and stayed unavailable after the user's ready reply.
+Added predict_parallel.py to reuse unchanged frozen inference in disjoint worker
+processes. It requires a fresh 10K pilot, exact TSV-hash parity with the laptop
+pilot and all existing feasibility gates before full inference. Linux RAM check
+uses existing psutil. Cloud throughput remains unmeasured; no full submission
+or new trained model exists. Run instructions are in the code README.
+Validation: all 8 regression tests passed, including serial/parallel TSV hash
+parity on the fixture and official validator --check-ids. Live laptop gate still
+rejects full runtime/RAM and accepts quality/disk. No cloud timing was measured.

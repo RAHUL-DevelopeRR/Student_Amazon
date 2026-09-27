@@ -27,14 +27,8 @@ def assess(pilot,validation,index,deadline='2026-09-27T18:29:00+00:00'):
     # every occurrence, plus per-query sets/mappings and all valid target IDs.
     string_bytes=sys.getsizeof('S2-123456789')
     validator_lower_bound=p['average_candidates']*m['queries']*(string_bytes+16)
-    try:
-        import ctypes
-        class Memory(ctypes.Structure):
-            _fields_=[('length',ctypes.c_ulong),('load',ctypes.c_ulong)]+[(n,ctypes.c_ulonglong) for n in ['total','available','page_total','page_available','virtual_total','virtual_available','extended']]
-        mem=Memory();mem.length=ctypes.sizeof(mem)
-        if not ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(mem)):raise OSError('memory query failed')
-        available=mem.available
-    except (AttributeError,OSError):available=None
+    import psutil
+    available=psutil.virtual_memory().available
     result={'quality_gate_pass':quality,'minimums':{'macro_f05':.82,'candidate_recall':.88,'pair_precision':.92},
             'remaining_seconds':remaining,'projected_inference_seconds':projected,
             'runtime_gate_pass':1.75*projected+7200<remaining,

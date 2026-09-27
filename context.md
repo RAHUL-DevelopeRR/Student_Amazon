@@ -193,3 +193,11 @@ Eight regression tests passed, including metric/retrieval, checkpoint/corruption
 France/empty output, and official-validator fixtures. Python syntax and pip check
 passed. Detailed reproducible measurements are tracked in
 experiments/production-inference-20260927.json; large artifacts remain ignored.
+
+## Cloud handoff 2026-09-27
+Current AWS quota verified: 8 standard on-demand vCPUs in us-east-1. No cloud
+instance launched. Chrome connection unavailable despite user reporting ready.
+User approved US$30 total cloud spend. Parallel runner prepared with four-worker
+10K pilot, exact frozen-output parity, and unchanged full-run feasibility gate.
+Cloud runtime and full outputs remain unverified. Keep baseline and holdout frozen.
+See code/business_entity_resolution/README.md for exact cloud commands.

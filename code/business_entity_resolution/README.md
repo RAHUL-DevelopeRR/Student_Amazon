@@ -197,3 +197,44 @@ each target's existence, duplicate-free lists, match containment and country cou
 Partial pilot files are never submission-ready. Assembly metadata remains marked
 `submission_ready: false` until the complete official validation has been observed
 to PASS. No script uploads files to Unstop.
+
+## Cloud continuation (2026-09-27)
+
+Use Python 3.12 and the pinned requirements. Transfer files byte-for-byte: Git
+checkout line-ending conversion can invalidate the frozen code fingerprints.
+Required inputs: code/business_entity_resolution, utils/validate_submission.py,
+all six source TSVs under dataset/train and dataset/test, artifacts/baseline-v1,
+artifacts/test_index/{manifest.json,records.sqlite,postings.sqlite,countries.npy,countries.json},
+artifacts/frozen_validation/validation.json, and
+artifacts/test_pilot_10k/assembled/assembly.json. Index build scratch and labels
+are unnecessary for frozen inference. Do not publish this transfer bundle.
+
+The parallel runner reuses predict.run unchanged and splits S1 into disjoint
+contiguous ranges. On an 8-vCPU host start with four processes (the existing
+scorer uses two LightGBM threads). The pilot must use a new directory so cached
+work cannot inflate throughput. Its two TSV hashes must equal the frozen laptop
+pilot, and the full run requires a matching host, worker count, runner, model,
+index and unchanged inference code. The existing quality/time/disk/RAM gate
+still applies; memory detection now uses the already installed psutil on Linux
+and Windows. Stage timing sums are aggregate worker time; the projection uses
+measured parallel wall time.
+
+From the transferred project root on Linux:
+
+```sh
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r code/business_entity_resolution/requirements.txt
+.venv/bin/python -m unittest discover -s code/business_entity_resolution/src -p 'test_*.py'
+.venv/bin/python -u code/business_entity_resolution/src/predict_parallel.py --workers 4 --output-dir artifacts/cloud_pilot
+.venv/bin/python -u code/business_entity_resolution/src/predict_parallel.py --workers 4 --limit 1732544 --pilot-dir artifacts/cloud_pilot --output-dir artifacts/cloud_full
+.venv/bin/python code/business_entity_resolution/src/assemble_submission.py --run-dir artifacts/cloud_full
+.venv/bin/python -X utf8 code/business_entity_resolution/src/validate_outputs.py --output-dir output
+```
+
+Stop if any command fails. No full output is submission-ready until official
+validation passes. No measured cloud runtime exists yet. AWS Virginia quota was
+8 standard on-demand vCPUs at the live check; the proposed 16-vCPU instance does
+not fit that quota. No instance was launched. Browser connectivity then failed.
+The user approved a US$30 total AWS ceiling; verify the actual instance price,
+configure a bounded shutdown, and preserve results before cleanup. This budget
+is not an AWS-enforced spending cap.

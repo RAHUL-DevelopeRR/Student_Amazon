@@ -1564,3 +1564,12 @@ Eight regression tests passed, including metric/retrieval, checkpoint/corruption
 France/empty output, and official-validator fixtures. Python syntax and pip check
 passed. Detailed reproducible measurements are tracked in
 experiments/production-inference-20260927.json; large artifacts remain ignored.
+
+## Latest continuation messages (2026-09-27)
+User: COntinue from where it interrupted.
+Assistant: AWS allows 8 vCPUs in Virginia; checking feasible compute and retaining
+full submission as priority, without promising top 1%.
+Assistant requested Chrome reconnection after browser control disappeared.
+User: ready
+Assistant verification: browser connection remained unavailable; no AWS resource
+launched. Prepared parallel frozen inference and Linux memory preflight locally.

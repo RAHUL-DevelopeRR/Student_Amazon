@@ -75,6 +75,11 @@ class InferenceTests(unittest.TestCase):
             self.assertEqual(run(index,baseline,root/'run',limit=2,shard_size=1)['pairs'],2)
             a=assemble(index,root/'run',root/'output')
             self.assertEqual(a['rows'],2);self.assertEqual(a['countries'],{'Japan':1,'France':1})
+            from predict_parallel import execute, ranges
+            self.assertEqual(ranges(5,2),[(0,3),(3,2)])
+            execute(index,baseline,root/'parallel',2,2)
+            parallel=assemble(index,root/'parallel',root/'parallel_output')
+            self.assertEqual(parallel['files'],a['files'])
             import subprocess,sys
             check=subprocess.run([sys.executable,'-X','utf8',str(ROOT/'utils/validate_submission.py'),'--matching',str(root/'output/matching_results.tsv'),'--candidate',str(root/'output/candidate_pairs.tsv'),'--test-dir',str(data),'--check-ids'],capture_output=True,text=True,encoding='utf-8')
             self.assertEqual(check.returncode,0,check.stdout+check.stderr)
