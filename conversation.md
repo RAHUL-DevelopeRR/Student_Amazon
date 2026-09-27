@@ -1573,3 +1573,7 @@ Assistant requested Chrome reconnection after browser control disappeared.
 User: ready
 Assistant verification: browser connection remained unavailable; no AWS resource
 launched. Prepared parallel frozen inference and Linux memory preflight locally.
+
+User: Continue from where it is interrupted
+Assistant: Confirmed full AWS command succeeded and S3 outputs exist. Chrome
+blocked validation report download; final report and local hash review pending.

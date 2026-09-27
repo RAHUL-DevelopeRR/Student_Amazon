@@ -257,3 +257,5 @@ local run; do not represent the partial pilot files as upload-ready.
 ## 2026-09-27 continuation
 COntinue from where it interrupted.
 Browser reconnection reply: ready
+
+Continue from where it is interrupted

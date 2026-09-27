@@ -201,3 +201,28 @@ User approved US$30 total cloud spend. Parallel runner prepared with four-worker
 10K pilot, exact frozen-output parity, and unchanged full-run feasibility gate.
 Cloud runtime and full outputs remain unverified. Keep baseline and holdout frozen.
 See code/business_entity_resolution/README.md for exact cloud commands.
+
+## AWS Core connected and compute launched
+Instance i-05c4be7f2a0cc17d4 (us-east-1), r7i.2xlarge, 64 GiB, 8 vCPUs.
+Task bucket amazon-ml-608942062000-20260927. SSM profile AmazonML20260927Runner.
+Auto-stop set for approximately 2026-09-27 18:29:54 UTC; verify before reuse.
+SSM pilot command: b61e85a8-57cf-4625-8c4a-474ca47c765c.
+All 8 cloud tests passed with multiprocessing spawn; local test rerun pending.
+Index/data transfers in progress; next: pilot parity + feasibility gate, then full
+inference, assembly, official validator, download and final package. No training
+change has been made. Stopped disk and S3 storage require cleanup after results
+are secured. No final submission exists at this checkpoint.
+
+## Completed AWS workflow observed 2026-09-27 16:52 IST
+Cloud pilot: 10,000 queries in 28.1 seconds, exact TSV parity; all feasibility gates
+passed. Both input archives uploaded successfully (HTTP 200). Full SSM command
+38cff36d-b638-473d-bb19-9dfb80adff5d finished with Success / response code 0,
+start 08:42:26 UTC, finish 10:19:40 UTC. This workflow includes inference,
+assembly, official validation and S3 output upload. S3 results/output contains
+matching_results.tsv (90.7 MB console size), candidate_pairs.tsv (4.6 GB),
+assembly.json, validation.json, official_validator.log and checksum sidecars.
+The validation report body and final hashes have NOT yet been independently read.
+AWS Core tools disappeared from available tools; browser is connected but Chrome
+blocks S3 download with ERR_BLOCKED_BY_CLIENT. Retrieve reports and outputs next.
+All 8 local tests also passed after explicit spawn change. No leaderboard upload
+has occurred; no rank is known. Instance automatic stop remains previously set.

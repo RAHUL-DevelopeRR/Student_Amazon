@@ -1,6 +1,7 @@
 """Run the unchanged scorer in disjoint processes; require a fresh cloud pilot."""
 import argparse
 from concurrent.futures import ProcessPoolExecutor
+from multiprocessing import get_context
 import os
 from pathlib import Path
 import platform
@@ -27,7 +28,7 @@ def execute(index, baseline, output, limit, workers):
     fingerprint = {'workers': workers, 'host': platform.node(),
                    'runner_sha256': sha256(__file__)}
     started = time.monotonic()
-    with ProcessPoolExecutor(max_workers=workers) as pool:
+    with ProcessPoolExecutor(max_workers=workers, mp_context=get_context('spawn')) as pool:
         futures = [pool.submit(run, index, baseline, output/f'part-{start}', start, count)
                    for start, count in parts]
         results = [future.result() for future in futures]

@@ -220,3 +220,24 @@ or new trained model exists. Run instructions are in the code README.
 Validation: all 8 regression tests passed, including serial/parallel TSV hash
 parity on the fixture and official validator --check-ids. Live laptop gate still
 rejects full runtime/RAM and accepts quality/disk. No cloud timing was measured.
+
+## AWS Core deployment, 2026-09-27
+AWS Core API authenticated account 608942062000; Virginia standard quota 8 vCPUs.
+Created private encrypted bucket amazon-ml-608942062000-20260927, role/profile
+AmazonML20260927Runner (SSM managed-instance access plus task-bucket input-read /
+result-write permissions), and no-ingress security group sg-07f60a24dbd0cfb00.
+Instance i-05c4be7f2a0cc17d4: r7i.2xlarge, Ubuntu 24.04, 8 vCPU / 64 GiB,
+100 GiB encrypted gp3, IMDSv2 required. Started 2026-09-27 08:29:38 UTC.
+Price List API returned USD 0.5292/hour compute (10 hours = USD 5.292).
+A shutdown +600 minutes was confirmed in /run/systemd/shutdown/scheduled.
+Shutdown stops compute; EBS and S3 remain billable until cleanup after retrieval.
+No inbound SSH or access keys were created. AWS CLI official installer was needed
+because apt did not offer awscli; installed libgomp1 for LightGBM.
+All 8 tests passed on cloud after changing multiprocessing to explicit spawn;
+Linux fork stalled after a parent process had initialized LightGBM threads.
+Input transfers and the timed 10K pilot are in progress; no full output yet.
+
+2026-09-27 16:52 IST: Full cloud workflow confirmed Success / exit 0 in Systems
+Manager, finished 10:19:40 UTC. Eight S3 output artifacts present, including both
+full TSVs. Download blocked by Chrome; report/hash review still pending. AWS Core
+tools unavailable this turn. No competition upload or verified ranking.
