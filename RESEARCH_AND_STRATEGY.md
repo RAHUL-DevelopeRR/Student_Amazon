@@ -1,5 +1,35 @@
 # Amazon ML Challenge 2026: evidence and competitive strategy
 
+## Live update — 27 September 2026, 22:24 IST
+
+Earlier development notes below are historical. The live portal confirms one
+evaluated 0.829 submission and now allows 17 successful uploads through 23:59 IST.
+Its updated problem statement says candidate-set size also affects final review.
+The baseline ZIP is complete and verified. Challenger full inference is running.
+
+The selected challenger improved fresh 1,000-query, full-target-corpus macro F0.5
+from 0.868896 to 0.905974. Its precision is 0.952117 and recall 0.849462. Retrieval
+recall is 0.926184; a separate 3,000-query development measurement gives a
+perfect-matcher ceiling of 0.968148. These populations differ, and neither figure
+predicts the leaderboard. Positive-only or reduced-corpus success percentages
+cannot establish precision, rank, or a 0.999 score.
+
+Technical sources checked again:
+- [Ditto](https://arxiv.org/abs/2004.00584) studies transformer pair matching and
+  difficult-example augmentation. It is a potential future matcher experiment,
+  not evidence that this competition can be won by installing a larger model.
+- [UniBlocker](https://arxiv.org/abs/2404.14831) reports complementary dense and
+  sparse blocking. Improving missed-candidate retrieval is the priority suggested
+  by our own recall measurements. No checkpoint was downloaded or license-cleared
+  for this run, and its benchmark scores do not transfer to this competition.
+- [LightGBM](https://github.com/lightgbm-org/LightGBM) confirms the library's MIT
+  license. The team's separately self-trained weights are explicitly MIT licensed
+  in the final package; there is no external pretrained checkpoint.
+
+Deadline decision: complete the measured challenger, validate all IDs and package
+its exact scored candidates. Do not replace the pipeline with an unbenchmarked
+neural model or assert a guaranteed score. No external business lookup was used.
+
 Research date: 25 September 2026. This is an engineering plan, not a claim of a
 winning model or a measured leaderboard score. Local experiment evidence lives in
 `artifacts/data_profile.json`, `artifacts/blocking_pilot/metrics.json`, and
