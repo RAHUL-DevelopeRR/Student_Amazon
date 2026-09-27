@@ -43,6 +43,8 @@ wheels/
 # Local data audit, model caches and competition outputs
 artifacts/
 output/
+output_v2/
+reproduced_output/
 models/
 tmp/
 *.duckdb*

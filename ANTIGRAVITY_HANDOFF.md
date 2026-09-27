@@ -119,3 +119,33 @@ The first submission is preserved. The challenger may replace it only if the
 AWS pilot completes, passes serial/parallel parity, and its measured full-run
 projection fits the remaining competition time with assembly and validation
 headroom. Never call a reduced pilot a full-corpus score or a leaderboard rank.
+# Latest verified state — 27 September 2026, 22:19 IST
+
+Open `C:\Users\DELL\Downloads\6ab10eb3b23ba_student_resource` in the IDE.
+The existing public score is still 0.829 (verified live in Unstop).
+
+Baseline final package is complete at `output/TrailingZeros_baseline_submission.zip`:
+2,215,069,858 bytes, SHA-256
+`0f66d5b07cdd56a76c34f81b4896eef6146407a69d00cdde36d68e3f8d96c764`.
+Both TSV hashes match cloud validation, ZIP CRC passed, and selected weights,
+source, reproduction command, methodology and official validator are included.
+The local baseline candidate TSV is complete; older incomplete-download warnings
+below are superseded. The ZIP has not been submitted.
+
+Challenger inference is active on `i-05c4be7f2a0cc17d4` in `us-east-1`, root
+`/opt/amazon-ml-challenger`. Resume command:
+`da8f4925-2ca0-4b88-bc7a-a170434cb634`. This corrects a short SSM timeout and
+preserves completed shards. Do not launch a concurrent run or delete shards.
+Validator source/input symlinks have been restored. Cloud packaging command
+`1ffcee9e-a149-45a6-8fc6-217b9c1c899c` waits for full validation and saves
+`results/challenger-final/TrailingZeros_submission.zip` in the existing private
+bucket `amazon-ml-608942062000-20260927`. TSVs/reports go to
+`results/challenger-output/`. Download and verify before using them.
+
+Instance shutdown is scheduled for approximately 23:59:54 IST. Unstop's matching
+upload closes at 23:59 IST. A separate ZIP submission route is not visible; the
+user does not know one. Never claim an upload without its portal receipt.
+No new training/scoring changes were made in this continuation. Eight regression
+tests passed; the fresh challenger validation remains macro F0.5 0.905974,
+precision 0.952117, recall 0.849462 on 1,000 queries against 10,320,219 targets.
+Neither 0.999 nor a top-percentile finish is established.

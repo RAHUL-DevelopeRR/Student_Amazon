@@ -251,3 +251,39 @@ score 0.829. Challenger untouched 1K holdout reached macro F0.905974 versus
 0.868896 baseline. Its AWS 10K pilot took 46.78 seconds with exact parity;
 corrected full command bf6e5c7c-f728-4b17-8308-9c8dec814507 is running. Preserve baseline
 until challenger assembly and official validation pass.
+
+## Live recovery and delivery preparation — 27 September, 22:16 IST
+Unstop was checked live in Chrome: exactly one evaluated submission, 0.829 at
+18:54 IST. The round deadline remains 23:59 IST; portal limit now 17 successful
+submissions. Only matching TSV upload is exposed in the active round; no final
+ZIP control was found on the round or team details page. Asked user for any
+separate official ZIP instructions. No new submission has been made.
+
+AWS challenger had completed about half its 1,732,544 queries when inspected.
+Its original 7,200-second command timeout was shorter than the measured
+8,105-second inference projection. Command bf6e5c7c-f728-4b17-8308-9c8dec814507
+was cancelled, confirmed cancelled, and resumed from checksum-valid shards by
+da8f4925-2ca0-4b88-bc7a-a170434cb634. The original launch bypassed the conservative
+run_challenger feasibility gate; do not describe it as a passed gate. Baseline
+remains preserved. Missing dataset and utils paths in the isolated challenger
+root were linked to original read-only inputs; live worker progress resumed.
+
+After full validation, command 1ffcee9e-a149-45a6-8fc6-217b9c1c899c will package
+the challenger with exact TSVs, selected weights, source, methodology, official
+validator and evidence, verify hashes/ZIP CRC, and store it under
+s3://amazon-ml-608942062000-20260927/results/challenger-final/.
+The full-run outputs go under results/challenger-output/.
+
+Local baseline candidate_pairs.tsv has now been fully recovered: 4,916,398,324
+bytes and SHA-256 9183b60e7bf26250cc1707414d94cc51f3a4c69a41840a8a640bf0c89279b935.
+This supersedes the previous INCOMPLETE warning. Baseline final ZIP packaging
+is in progress under output/TrailingZeros_baseline_submission.zip (a .partial
+file is not a deliverable). Eight regression tests passed again. Added frozen
+model reproduction and validated package commands; no scorer changes this turn.
+Antigravity's positive-only 99.05% heuristic claim does not measure precision
+or establish a leaderboard score. No 0.999 or top-percentile guarantee is valid.
+
+Baseline ZIP subsequently completed with CRC verification: 2,215,069,858 bytes,
+SHA-256 0f66d5b07cdd56a76c34f81b4896eef6146407a69d00cdde36d68e3f8d96c764.
+User does not know of a separate ZIP submission link. Continue preparing the
+challenger; do not describe any ZIP as submitted without a portal receipt.

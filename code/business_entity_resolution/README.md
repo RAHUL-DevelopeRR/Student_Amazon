@@ -1,4 +1,32 @@
-# Submitted baseline and reproduction (27 September 2026)
+# Final package reproduction (27 September 2026)
+
+The ZIP includes the exact selected frozen model in this folder's `model/`.
+The methodology document identifies which model produced its output files.
+The original pipeline source and self-trained weights are MIT licensed (LICENSE);
+there is no external pretrained checkpoint. Keep the supplied competition data
+under its original terms. Use a 64 GiB RAM machine with at least 35 GiB free disk.
+
+Extract the ZIP, place the supplied `dataset/` at its root, and run there with
+Python 3.12. The package includes the unchanged official validator under `utils/`.
+
+```sh
+python -m venv .venv
+# Windows: replace .venv/bin/python with .venv/Scripts/python.exe below.
+.venv/bin/python -m pip install -r code/business_entity_resolution/requirements.txt
+.venv/bin/python -m unittest discover -s code/business_entity_resolution/src -p 'test_*.py'
+.venv/bin/python -u code/business_entity_resolution/src/build_test_candidates.py
+.venv/bin/python -u code/business_entity_resolution/src/reproduce_submission.py
+```
+
+This reuses the selected weights without retuning. Four CPU workers score all
+test queries, then assemble both TSVs in `reproduced_output/` and run the official
+validator with `--check-ids`. Completed checksum-valid shards resume after an
+interruption. Compare the reproduced TSV SHA-256 values with
+`verification/validation.json`. Do not mix shards from different models.
+Source bytes must remain unchanged because frozen manifests verify their hashes.
+No script uploads results to Unstop.
+
+## Historical baseline training and development
 
 The first full submission scored **0.829** on the public portal. Both full TSVs
 passed the supplied official validator with `--check-ids`. Earlier dated notes
@@ -16,9 +44,7 @@ python -m venv .venv
 .venv/bin/python -u code/business_entity_resolution/src/token_blocking.py --queries 3000 --max-df 20000 --top-k 60 --memory-limit 1GB --output-dir artifacts/blocking_token_wide
 .venv/bin/python -u code/business_entity_resolution/src/train.py --candidate-dir artifacts/blocking_token_wide --output-dir artifacts/matcher_token_wide
 .venv/bin/python -u code/business_entity_resolution/src/build_test_candidates.py
-.venv/bin/python -u code/business_entity_resolution/src/predict.py --freeze-from artifacts/matcher_token_wide --limit 1732544 --output-dir artifacts/reproduced_full
-.venv/bin/python code/business_entity_resolution/src/assemble_submission.py --run-dir artifacts/reproduced_full --output-dir output
-.venv/bin/python -X utf8 code/business_entity_resolution/src/validate_outputs.py --output-dir output
+.venv/bin/python -u code/business_entity_resolution/src/predict.py --freeze-from artifacts/matcher_token_wide --output-dir artifacts/retrained_pilot
 ```
 
 Use an empty artifacts directory for a clean rebuild. Indexing, training and
@@ -266,7 +292,7 @@ python3.12 -m venv .venv
 ```
 
 Stop if any command fails. No full output is submission-ready until official
-validation passes. No measured cloud runtime exists yet. AWS Virginia quota was
+validation passes. The following was a historical prelaunch note: AWS Virginia quota was
 8 standard on-demand vCPUs at the live check; the proposed 16-vCPU instance does
 not fit that quota. No instance was launched. Browser connectivity then failed.
 The user approved a US$30 total AWS ceiling; verify the actual instance price,
